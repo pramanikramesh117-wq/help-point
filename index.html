@@ -1,109 +1,199 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Help Point</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Help Point - জরুরি পরিষেবা</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f2f6fc;color:#17243a}
-header{background:#1249a3;color:white;padding:22px 16px}header h1{margin:0 0 6px}
-main{max-width:700px;margin:auto;padding:16px}.search{display:flex;gap:8px}
-input,button{font:inherit;padding:12px;border-radius:10px}
-input{width:100%;border:1px solid #bbc8da;min-width:0}
-button{border:0;background:#1456b8;color:white;cursor:pointer}
-.sos{width:100%;background:#d71920;font-weight:bold;font-size:20px;margin:12px 0}
-.categories{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
-.categories button{background:white;color:#17365f;border:1px solid #ccd7e7}
-.categories button.active{background:#1456b8;color:white}
-#status{font-size:14px;color:#46566d;margin:12px 0}
-.place{background:white;border-radius:12px;padding:14px;margin:10px 0;box-shadow:0 2px 8px #0001}
-.place h3{margin:0 0 8px}.place p{margin:6px 0;overflow-wrap:anywhere}
-a{color:#1456b8}.small{font-size:13px;color:#536174}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}
+header{background:#0756a8;color:white;text-align:center;padding:22px 12px}
+header h1{margin:0;font-size:30px}
+main{max-width:700px;margin:auto;padding:14px}
+.card{background:white;padding:16px;border-radius:14px;margin-bottom:14px;box-shadow:0 2px 8px #0001}
+h2{font-size:21px}
+button,input{font:inherit;padding:12px;border-radius:9px}
+button{font-weight:bold;cursor:pointer}
+.primary{width:100%;background:#0756a8;color:white;border:0;margin:5px 0}
+.sos{width:100%;background:#d71920;color:white;border:0;font-size:22px;padding:16px}
+input{width:100%;border:1px solid #aaa;margin:6px 0}
+.categories{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cat{background:#e8f1ff;color:#0756a8;border:1px solid #c9dcf7}
+.cat.active{background:#0756a8;color:white}
+#status{padding:12px;background:#fff4cf;border-radius:8px;line-height:1.6}
+.result{padding:13px 0;border-bottom:1px solid #ddd;overflow-wrap:anywhere}
+.result h3{margin:0 0 8px}
+.result p{line-height:1.5}
+a{color:#0756a8}
+.small{font-size:13px;line-height:1.5;color:#5b6573}
 </style>
 </head>
 <body>
-<header><h1>📍 Help Point</h1><div>আপনার কাছাকাছি দরকারি পরিষেবা খুঁজুন</div></header>
+<header>
+<h1>📍 Help Point</h1>
+<p>আপনার কাছাকাছি প্রয়োজনীয় পরিষেবা খুঁজুন</p>
+</header>
+
 <main>
-<button class="sos" onclick="location.href='tel:112'">🆘 জরুরি সাহায্য — 112-এ কল</button>
-<div class="search"><input id="area" placeholder="এলাকা / PIN code / landmark"><button onclick="searchArea()">খুঁজুন</button></div>
-<button style="width:100%;margin-top:8px" onclick="useLocation()">📍 আমার বর্তমান অবস্থান ব্যবহার করুন</button>
-<div class="categories" id="categories">
-<button class="active" data-kind="hospital">🏥 হাসপাতাল</button>
-<button data-kind="fuel">⛽ পেট্রল পাম্প</button>
-<button data-kind="garage">🔧 গ্যারেজ</button>
-<button data-kind="restaurant">🍽️ রেস্তোরাঁ</button>
-<button data-kind="hotel">🏨 হোটেল</button>
-<button data-kind="police">👮 থানা</button>
+<section class="card">
+<button class="sos" onclick="call112()">🆘 জরুরি সাহায্য — 112</button>
+<p class="small">ভারতে জরুরি সাহায্যের নম্বর 112। বোতামটি ফোনের কল স্ক্রিন খোলার চেষ্টা করবে।</p>
+</section>
+
+<section class="card">
+<h2>📍 আপনার অবস্থান</h2>
+<button class="primary" onclick="useLocation()">আমার বর্তমান অবস্থান ব্যবহার করুন</button>
+<p>অথবা এলাকার নাম / PIN কোড লিখুন:</p>
+<input id="area" placeholder="যেমন: Kolkata অথবা 700001">
+<button class="primary" onclick="searchArea()">এলাকা দিয়ে খুঁজুন</button>
+</section>
+
+<section class="card">
+<h2>কী খুঁজছেন?</h2>
+<div class="categories">
+<button class="cat active" data-type="hospital" onclick="choose(this)">🏥 হাসপাতাল</button>
+<button class="cat" data-type="fuel" onclick="choose(this)">⛽ পেট্রোল পাম্প</button>
+<button class="cat" data-type="garage" onclick="choose(this)">🔧 গ্যারেজ</button>
+<button class="cat" data-type="restaurant" onclick="choose(this)">🍽️ রেস্তোরাঁ</button>
+<button class="cat" data-type="hotel" onclick="choose(this)">🛏️ হোটেল</button>
+<button class="cat" data-type="police" onclick="choose(this)">👮 পুলিশ স্টেশন</button>
+<button class="cat" data-type="pharmacy" onclick="choose(this)">💊 ওষুধের দোকান</button>
+<button class="cat" data-type="atm" onclick="choose(this)">🏧 ATM</button>
 </div>
-<div id="status">লোকেশন দিন অথবা এলাকা/PIN code লিখে খুঁজুন।</div>
+<p class="small">প্রথমে বর্তমান অবস্থান অথবা এলাকার নাম দিন। তারপর বিভাগ বেছে নিন।</p>
+</section>
+
+<section class="card">
+<h2>🔎 ফলাফল</h2>
+<div id="status" role="status">আপনার অবস্থান দিন অথবা এলাকার নাম / PIN কোড লিখুন।</div>
 <div id="results"></div>
-<p class="small">জায়গার তথ্য OpenStreetMap-এর অবদানকারীদের ডেটা থেকে আসতে পারে। তথ্য অসম্পূর্ণ বা পুরোনো হতে পারে। জরুরি অবস্থায় 112-এ কল করুন।</p>
+<button id="retry" class="primary" style="display:none" onclick="findPlaces()">আবার চেষ্টা করুন</button>
+<p class="small">তথ্য OpenStreetMap থেকে আসে। সব জায়গার ফোন নম্বর বা ঠিকানা পাওয়া নাও যেতে পারে।</p>
+</section>
 </main>
+
 <script>
-let pos=null,kind='hospital',busy=false;
-const kinds={
- hospital:'["amenity"="hospital"]',
- fuel:'["amenity"="fuel"]',
- garage:'["shop"="car_repair"]',
- restaurant:'["amenity"~"restaurant|fast_food|cafe"]',
- hotel:'["tourism"~"hotel|motel|guest_house|hostel"]',
- police:'["amenity"="police"]'
-};
-document.querySelectorAll('#categories button').forEach(b=>b.onclick=()=>{
- document.querySelectorAll('#categories button').forEach(x=>x.classList.remove('active'));
- b.classList.add('active');kind=b.dataset.kind;
- if(pos) findPlaces();
-});
-function distance(a,b,c,d){
- const r=x=>x*Math.PI/180;
- const x=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;
- return 6371*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+let pos=null;
+let kind="hospital";
+let busy=false;
+
+function setStatus(s){
+ document.getElementById("status").textContent=s;
+}
+function call112(){
+ location.href="tel:112";
+}
+function choose(b){
+ document.querySelectorAll(".cat").forEach(x=>x.classList.remove("active"));
+ b.classList.add("active");
+ kind=b.dataset.type;
+ if(pos)findPlaces();
+ else setStatus("প্রথমে আপনার অবস্থান দিন অথবা এলাকার নাম / PIN কোড দিয়ে খুঁজুন।");
 }
 function useLocation(){
- if(!navigator.geolocation){status('এই ব্রাউজারে লোকেশন ব্যবহার করা যাচ্ছে না। এলাকা লিখে খুঁজুন।');return}
- status('আপনার অবস্থান নেওয়া হচ্ছে…');
+ if(!navigator.geolocation){
+  setStatus("Location ব্যবহার করা যাচ্ছে না। এলাকার নাম লিখুন।");
+  return;
+ }
+ setStatus("আপনার অবস্থান নেওয়া হচ্ছে। অনুমতি চাইলে Allow চাপুন।");
  navigator.geolocation.getCurrentPosition(p=>{
- pos={lat:p.coords.latitude,lon:p.coords.longitude};findPlaces();
- },()=>status('লোকেশন পাওয়া যায়নি। অনুমতি দিন অথবা এলাকা/PIN code লিখুন।'),{enableHighAccuracy:true,timeout:15000});
+  pos={lat:p.coords.latitude,lon:p.coords.longitude};
+  setStatus("অবস্থান পাওয়া গেছে। জায়গা খোঁজা হচ্ছে...");
+  findPlaces();
+ },e=>{
+  if(e.code===1)setStatus("Location অনুমতি বন্ধ আছে। Chrome-এর Site settings থেকে Location Allow করুন, অথবা এলাকার নাম লিখুন।");
+  else setStatus("অবস্থান পাওয়া যায়নি। GPS চালু করে আবার চেষ্টা করুন অথবা এলাকার নাম লিখুন।");
+ },{enableHighAccuracy:true,timeout:15000,maximumAge:60000});
 }
 async function searchArea(){
- const q=document.getElementById('area').value.trim();
- if(!q){status('আগে এলাকা, PIN code বা landmark লিখুন।');return}
- status('এলাকা খোঁজা হচ্ছে…');
+ let area=document.getElementById("area").value.trim();
+ if(!area){setStatus("দয়া করে এলাকার নাম অথবা PIN কোড লিখুন।");return;}
+ setStatus("এলাকার অবস্থান খোঁজা হচ্ছে...");
+ document.getElementById("results").innerHTML="";
  try{
- const r=await fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&q='+encodeURIComponent(q+', India'));
- const d=await r.json();
- if(!d.length){status('এলাকা পাওয়া যায়নি। অন্যভাবে লিখে চেষ্টা করুন।');return}
- pos={lat:+d[0].lat,lon:+d[0].lon};findPlaces();
- }catch(e){status('এলাকা খোঁজা যাচ্ছে না। ইন্টারনেট সংযোগ পরীক্ষা করুন।')}
+  let r=await fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&country=India&q="+encodeURIComponent(area));
+  if(!r.ok)throw Error();
+  let d=await r.json();
+  if(!d.length){setStatus("এলাকা পাওয়া যায়নি। অন্যভাবে নাম লিখে চেষ্টা করুন।");return;}
+  pos={lat:+d[0].lat,lon:+d[0].lon};
+  setStatus("এলাকা পাওয়া গেছে। জায়গা খোঁজা হচ্ছে...");
+  findPlaces();
+ }catch(e){setStatus("এলাকা খোঁজা যাচ্ছে না। ইন্টারনেট পরীক্ষা করে আবার চেষ্টা করুন।");}
 }
+const cats={
+ hospital:["amenity",["hospital","clinic"]],
+ fuel:["amenity",["fuel"]],
+ garage:["shop",["car_repair"]],
+ restaurant:["amenity",["restaurant","cafe","fast_food"]],
+ hotel:["tourism",["hotel","guest_house","hostel"]],
+ police:["amenity",["police"]],
+ pharmacy:["amenity",["pharmacy"]],
+ atm:["amenity",["atm"]]
+};
 async function findPlaces(){
- if(!pos||busy)return;busy=true;
- status('কাছাকাছি জায়গা খোঁজা হচ্ছে…');document.getElementById('results').innerHTML='';
- const filter=kinds[kind];
- const query='[out:json][timeout:20];(node'+filter+'(around:5000,'+pos.lat+','+pos.lon+');way'+filter+'(around:5000,'+pos.lat+','+pos.lon+');relation'+filter+'(around:5000,'+pos.lat+','+pos.lon+'););out center tags;';
+ if(!pos||busy)return;
+ busy=true;
+ let out=document.getElementById("results");
+ out.innerHTML="";
+ document.getElementById("retry").style.display="none";
+ setStatus("কাছাকাছি জায়গা খোঁজা হচ্ছে। অপেক্ষা করুন...");
+ let c=cats[kind];
+ let around="(around:5000,"+pos.lat+","+pos.lon+")";
+ let parts=c[1].map(v=>
+  'node["'+c[0]+'"="'+v+'"]'+around+';way["'+c[0]+'"="'+v+'"]'+around+';relation["'+c[0]+'"="'+v+'"]'+around+';'
+ ).join("");
+ let query="[out:json][timeout:25];("+parts+");out center tags;";
  try{
- const r=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body:query});
- if(!r.ok)throw Error('service');
- const data=await r.json();
- const items=data.elements.map(e=>{
- const t=e.tags||{},lat=e.lat??e.center?.lat,lon=e.lon??e.center?.lon;
- if(lat==null||lon==null)return null;
- return {name:t.name||t['name:en']||'নাম দেওয়া নেই',lat,lon,phone:t.phone||t['contact:phone']||'',address:[t['addr:street'],t['addr:suburb'],t['addr:city']||t['addr:town'],t['addr:postcode']].filter(Boolean).join(', '),dist:distance(pos.lat,pos.lon,lat,lon)};
- }).filter(Boolean).sort((a,b)=>a.dist-b.dist);
- if(!items.length){status('এই এলাকায় তথ্য পাওয়া যায়নি। অন্য বিভাগ বা এলাকা দিয়ে চেষ্টা করুন।');return}
- status('৫ কিমির মধ্যে পাওয়া ফলাফল: '+items.length+'টি।');
- document.getElementById('results').innerHTML=items.slice(0,30).map(p=>
- '<article class="place"><h3>'+esc(p.name)+'</h3>'+
- '<p>📍 '+esc(p.address||'ঠিকানা দেওয়া নেই')+'</p>'+
- '<p>📏 দূরত্ব: '+p.dist.toFixed(1)+' কিমি (আনুমানিক)</p>'+
- (p.phone?'<p>📞 <a href="tel:'+esc(p.phone)+'">'+esc(p.phone)+'</a></p>':'<p>📞 ফোন নম্বর দেওয়া নেই</p>')+
- '<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&origin='+pos.lat+','+pos.lon+'&destination='+p.lat+','+p.lon+'">Google Maps-এ যাওয়ার রাস্তা দেখুন</a></article>'
- ).join('');
- }catch(e){status('এখন জায়গার তথ্য পাওয়া যাচ্ছে না। একটু পরে চেষ্টা করুন।')}
- finally{busy=false}
+  let data=null;
+  for(let server of ["https://overpass-api.de/api/interpreter","https://overpass.kumi.systems/api/interpreter"]){
+   try{
+    let r=await fetch(server,{method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},body:"data="+encodeURIComponent(query)});
+    if(!r.ok)throw Error();
+    data=await r.json();break;
+   }catch(e){}
+  }
+  if(!data)throw Error();
+  let items=(data.elements||[]).map(item=>{
+   let t=item.tags||{},lat=item.lat??item.center?.lat,lon=item.lon??item.center?.lon;
+   if(lat==null||lon==null)return null;
+   return {
+    name:t.name||t.brand||t.operator||"নাম দেওয়া নেই",
+    lat,lon,
+    dist:distance(pos.lat,pos.lon,lat,lon),
+    address:[t["addr:street"],t["addr:suburb"],t["addr:city"],t["addr:postcode"]].filter(Boolean).join(", "),
+    phone:t.phone||t["contact:phone"]||t["contact:mobile"]
+   };
+  }).filter(Boolean).sort((a,b)=>a.dist-b.dist);
+  if(!items.length){setStatus("৫ কিলোমিটারের মধ্যে তথ্য পাওয়া যায়নি। অন্য বিভাগ বা এলাকা দিয়ে চেষ্টা করুন।");return;}
+  setStatus(items.length+"টি জায়গা পাওয়া গেছে। দূরত্ব আনুমানিক।");
+  items.slice(0,30).forEach(item=>{
+   let box=document.createElement("div");box.className="result";
+   let h=document.createElement("h3");h.textContent=item.name;box.appendChild(h);
+   let d=document.createElement("p");d.textContent="📍 দূরত্ব: "+fmt(item.dist);box.appendChild(d);
+   let a=document.createElement("p");a.textContent="ঠিকানা: "+(item.address||"ঠিকানা পাওয়া যায়নি");box.appendChild(a);
+   let p=document.createElement("p");
+   if(item.phone){
+    let l=document.createElement("a");l.href="tel:"+item.phone.replace(/[^\d+]/g,"");l.textContent="📞 ফোন: "+item.phone;p.appendChild(l);
+   }else p.textContent="📞 ফোন নম্বর পাওয়া যায়নি";
+   box.appendChild(p);
+   let m=document.createElement("a");
+   m.href="https://www.google.com/maps/dir/?api=1&destination="+item.lat+","+item.lon;
+   m.target="_blank";m.rel="noopener noreferrer";m.textContent="🗺️ Google Maps-এ রাস্তা দেখুন";
+   box.appendChild(m);out.appendChild(box);
+  });
+ }catch(e){
+  setStatus("মানচিত্রের তথ্য পাওয়া যাচ্ছে না। ইন্টারনেট পরীক্ষা করে আবার চেষ্টা করুন।");
+  document.getElementById("retry").style.display="block";
+ }finally{busy=false;}
 }
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function distance(a,b,c,d){
+ const rad=x=>x*Math.PI/180,R=6371;
+ let x=rad(c-a),y=rad(d-b);
+ let z=Math.sin(x/2)**2+Math.cos(rad(a))*Math.cos(rad(c))*Math.sin(y/2)**2;
+ return R*2*Math.atan2(Math.sqrt(z),Math.sqrt(1-z));
+}
+function fmt(km){return km<1?Math.round(km*1000)+" মিটার":km.toFixed(1)+" কিমি";}
 </script>
 </body>
 </html>
